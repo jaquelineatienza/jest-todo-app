@@ -36,6 +36,12 @@ export class TodoService {
     if (this.todos.length === prevLen) throw new Error('Todo not found');
   }
 
+  stats() {
+    const total = this.todos.length;
+    const completed = this.todos.filter((t) => t.completed).length;
+    const pending = total - completed;
+    return { total, completed, pending };
+  }
   clear(): void {
     this.todos = [];
   }

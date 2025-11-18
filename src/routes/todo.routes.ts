@@ -8,7 +8,9 @@ export function buildTodoRouter(service: TodoService): Router {
   router.get('/', (_req, res) => {
     res.json(service.list());
   });
-
+  router.get("/stats", (_req, res) => {
+    res.json(service.stats())
+  })
   router.post('/', (req, res) => {
     try {
       const { title } = req.body || {};

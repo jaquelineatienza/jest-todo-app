@@ -1,8 +1,23 @@
 
 import request from 'supertest';
-import app from '../../src/app';
+import express from "express";
+import { TodoService } from '../../src/services/todo.service';
+import { buildTodoRouter } from '../../src/routes/todo.routes';
 
 describe('Todo API', () => {
+  let app: express.Express;
+
+
+  beforeEach(() => {
+
+    app = express();
+    app.use(express.json());
+
+    const todoService = new TodoService();
+    app.use("/todos", buildTodoRouter(todoService));
+    app.get("/health", (_req, res) => res.json({ ok: true }));
+  })
+
   // Test de salud: verifica que el servidor responda correctamente
   it('GET /health -> 200', async () => {
     const res = await request(app).get('/health');
@@ -47,5 +62,20 @@ describe('Todo API', () => {
     const res = await request(app).post('/todos').send({ title: 'a' });
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty('error');
+  });
+
+  it("GET /todos/stats devuelve los totales", async () => {
+
+    await request(app).post("/todos").send({ title: "A" });
+    const b = await request(app).post("/todos").send({ title: "B" });
+    await request(app).post("/todos").send({ title: "C" });
+
+    await request(app).patch(`/todos/${b.body.id}/toggle`);
+
+
+    const res = await request(app).get("/todos/stats");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ total: 3, completed: 1, pending: 2 });
   });
 });

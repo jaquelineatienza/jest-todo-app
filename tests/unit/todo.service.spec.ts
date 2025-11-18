@@ -40,4 +40,15 @@ describe('TodoService', () => {
   it('remove lanza error si no existe', () => {
     expect(() => svc.remove('nope')).toThrow('Todo not found');
   });
+
+  it("devuelve totales correctos (total, completed, pending)", () => {
+    svc.create("Todo A");
+    const t2 = svc.create("Todo B");
+    svc.create("Todo C");
+
+    svc.toggle(t2.id);
+
+    expect(svc.stats()).toEqual({ total: 3, completed: 1, pending: 2 });
+  });
 });
+
