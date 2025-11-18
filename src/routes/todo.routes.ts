@@ -4,13 +4,13 @@ import { TodoService } from '../services/todo.service';
 
 export function buildTodoRouter(service: TodoService): Router {
   const router = Router();
-
-  router.get('/', (_req, res) => {
-    res.json(service.list());
-  });
   router.get("/stats", (_req, res) => {
     res.json(service.stats())
   })
+  router.get('/', (_req, res) => {
+    res.json(service.list());
+  });
+
   router.post('/', (req, res) => {
     try {
       const { title } = req.body || {};

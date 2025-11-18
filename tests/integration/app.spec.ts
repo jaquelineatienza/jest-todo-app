@@ -65,10 +65,10 @@ describe('Todo API', () => {
   });
 
   it("GET /todos/stats devuelve los totales", async () => {
+    await request(app).post("/todos").send({ title: "Todo A" });
+    const b = await request(app).post("/todos").send({ title: "Todo B" });
+    await request(app).post("/todos").send({ title: "Todo C" });
 
-    await request(app).post("/todos").send({ title: "A" });
-    const b = await request(app).post("/todos").send({ title: "B" });
-    await request(app).post("/todos").send({ title: "C" });
 
     await request(app).patch(`/todos/${b.body.id}/toggle`);
 
